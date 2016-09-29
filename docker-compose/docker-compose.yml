@@ -1,0 +1,6 @@
+version: '2'
+services:
+  web:
+    image: quay.io/codymccain/rectangles-rest:latest
+    ports:
+     - "3000:3000"

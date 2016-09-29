@@ -1,6 +1,29 @@
 Rectangles
 ==========
 
+##Quick Start
+
+Rectangles is a Java application.  Follow the following directions to get started
+quickly.
+
+###Prerequisites
+
+The following prerequisites are required for building and running this application.
+
+*   git client
+*   Java JRE 8+
+*   Docker / Docker Machine (if you wish to build and invoke in Docker)
+
+###Build
+
+Clone the repository to your local machine.
+
+```
+git clone https://github.com/2BoldlyCode/rectangles.git
+```
+
+
+
 ##Overview
 
 Rectangles analyzes a set of rectangles and determines the following properties:
@@ -26,7 +49,8 @@ To that extent, this solution is intended to demonstrate the following concepts:
 
 The originally stated problem did not adequately specify the geometrical definitions
 of intersection, containment, and adjacency.  I have elaborated upon the original
-definitions and examples to provide a more complete specification and test set.  
+definitions and examples to provide a more complete specification and test set.
+
 The examples for each property are also modeled as unit tests to validate the library.
 
 ###Language Proficiency

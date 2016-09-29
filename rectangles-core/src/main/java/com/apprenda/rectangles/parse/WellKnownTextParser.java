@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WellKnownTextParser implements Closeable {
 
 	static final Pattern RECTANGLE_PATTERN = Pattern
-			.compile("\\((?<x1>\\d+)\\s+(?<y1>\\d+),\\s+(?<x2>\\d+)\\s+(?<y2>\\d+)\\)");
+			.compile("\\((?<x1>\\d+)\\s+(?<y1>\\d+),\\s*(?<x2>\\d+)\\s+(?<y2>\\d+)\\)");
 
 	final LineNumberReader reader;
 

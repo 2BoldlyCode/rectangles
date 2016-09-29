@@ -52,9 +52,4 @@ public enum Side {
 	public Set<Side> orthogonal() {
 		return axisToSides.get(axis.orthogonal());
 	}
-
-	@Override
-	public String toString() {
-		return String.format("%s (%s)", name(), axis.name());
-	}
 }

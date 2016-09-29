@@ -27,9 +27,4 @@ public enum Axis {
 			return Y;
 		}
 	}
-
-	@Override
-	public String toString() {
-		return String.format("%s axis", name());
-	}
 }
