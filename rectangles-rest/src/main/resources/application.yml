@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: rectangles
+server:
+  port: ${PORT:3000}
