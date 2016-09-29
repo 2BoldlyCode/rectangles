@@ -12,7 +12,45 @@ The following prerequisites are required for building and running this applicati
 
 *   git client
 *   Java JRE 8+
-*   Docker / Docker Machine (if you wish to build and invoke in Docker)
+*   Docker Toolbox
+
+###Docker
+
+Both a command line client and REST service has been pushed to quay.io as docker images.
+
+If you have Docker setup on your machine, you can do run the example data by executing
+the following command:
+
+```
+./rectangles -d < example/testdata
+```
+
+This will download the CLI image and run it interactively.
+
+Similarly, to launch the REST web service, make sure you docker-compose installed and
+on your path.  From the project base directory:
+
+```
+cd docker-compose
+docker-compose up
+```
+
+To find out where the server started up, you can use the following snippet to discover
+the docker host IP.
+
+```
+echo $DOCKER_HOST | n="[0-9]\{1,3\}" sed "s/.*\/\/\($n\.$n\.$n\.$n\).*/\1/"
+```
+
+Using that IP, we can query the server using cURL
+
+```
+curl http://$HOST_IP:3000/analyze/0,0,5,5/1,1,4,4
+```
+
+In this example, I passed to rectangles to be analyzed `(0 0, 5 5)` and `(1 1, 4 4)`
+
+Read on to learn more about how we represent rectangle geometry and such.
 
 ###Build
 
@@ -22,7 +60,42 @@ Clone the repository to your local machine.
 git clone https://github.com/2BoldlyCode/rectangles.git
 ```
 
+The run script automatically downloads maven and builds the source, however, should
+something go wrong and you need to build it manually, execute the following from the
+project root directory:
 
+On OSX / Linux
+
+```
+./mvnw install
+```
+
+On Windows
+
+```
+./mvnw.cmd install
+```
+
+This will download all dependencies and build.  Follow the directions in the wrapper
+error messages if you are missing a Java JDK or do not have your path setup correctly.
+
+To start up the script locally, use the spring-boot maven plugin as follows (substitute)
+the appropriate maven command (mvnw.cmd) for windows.
+
+```
+cd rectangles-cli
+../mvnw spring-boot:run < ../example/testdata
+```
+
+Finally, to build your own docker image, you can use the `build-docker.sh` script.
+I have only tested this on OSX.  From the project root, execute:
+
+```
+./build-docker.sh
+```
+
+By default this builds both the CLI and REST server.  Just pass an argument such as
+`cli` or `rest` to only build that component.
 
 ##Overview
 
@@ -73,7 +146,7 @@ than or equal to Long.MAX_VALUE.
 Using non- register-constrained data types such as BigInteger is not efficient and
 we are not creating rectangles on the scale of star systems.
 
-I have a couple of BASH scripts demonstrating build or launch tools.
+I have a couple of BASH scripts demonstrating build and launch tools.
 
 ###Build Automation and Dependency Management
 
@@ -84,7 +157,32 @@ adequate to accomplish my goals.
 The Maven model is responsible for building and packaging my solution.  I will also use
 it to configure optional packaging solutions such as Docker.
 
-###
+###REST Service
+
+Using SpringBoot and SpringMVC I have created a very simple REST wrapper around the
+core analysis code that can provide answers in JSON.  It accepts a very simple formula
+for requesting analysis.
+
+```
+http://localhost:3000/analyze/x1,y1,x2,y2/x1,y1,x2,y2
+```
+
+###Use Git and Release Management
+
+I used Git to version my source and GitHub to publish it.  Further more, released
+versions have been pushed as ready-to-run docker images on quay.io.  The source
+incorporates the version of the software for informational purposes by scraping
+the local git repository properties.
+
+###OSX / Linux Focus
+
+The java app will run on Windows; however, the vast majority of my experience is on
+Linux/OSX.   Please try to run the app manually using the compiled jar (a manifest exists
+for the entry point) if you have any problems on the Windows box.
+
+```
+java -jar rectangles/rectangles-cli/target/rectangles-cli-0.0.1-SNAPSHOT.jar < example/testdata
+```
 
 ##Definitions
 
