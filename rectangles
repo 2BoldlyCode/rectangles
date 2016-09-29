@@ -1,0 +1,66 @@
+#!/bin/bash
+
+error() {
+  local parent_lineno="$1"
+  local message="$2"
+  local code="${3:-1}"
+  if [[ -n "$message" ]] ; then
+    echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
+  else
+    echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
+  fi
+  exit "${code}"
+}
+trap 'error ${LINENO}' ERR
+
+use_docker=false
+
+while getopts ":dh" opt; do
+  case $opt in
+    d)
+      use_docker=true
+      ;;
+    h)
+      echo "Usage: ./rectangles [-d]" >&2
+      echo "" >&2
+      echo "Typically a data file is redirected as standard input." >&2
+      echo "For example: ./rectangles -d < examples/testdata" >&2
+      echo "" >&2
+      echo "-d    use the docker image" >&2
+      echo "" >&2
+      exit 0
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+with_docker() {
+  exec docker run \
+    -i --rm \
+    "quay.io/codymccain/rectangles-cli:latest" "$@"
+}
+
+without_docker() {
+  ./mvnw install -pl rectangles-cli -am
+  cd rectangles-cli || exit
+  ../mvnw spring-boot:run
+}
+
+prev_pwd=`pwd`
+dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+cd $dir || exit
+
+if [ "$use_docker" = true ]; then
+  with_docker
+else
+  without_docker
+fi
+
+cd $prev_pwd || exit
