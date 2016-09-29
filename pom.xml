@@ -64,7 +64,6 @@
 	</dependencies>
 
 	<modules>
-		<module>rectangles-model</module>
 		<module>rectangles-cli</module>
 		<module>rectangles-rest</module>
 		<module>rectangles-core</module>

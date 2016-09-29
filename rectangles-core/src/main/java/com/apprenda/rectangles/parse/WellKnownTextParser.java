@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,14 +35,20 @@ public class WellKnownTextParser implements Closeable {
 
 	final LineNumberReader reader;
 
-	public WellKnownTextParser(InputStream stream) {
-		this.reader = new LineNumberReader(new InputStreamReader(stream));
+	public WellKnownTextParser(InputStream in) {
+		this.reader = new LineNumberReader(new InputStreamReader(in));
 	}
 
-	Set<Rectangle> readline() throws IOException {
-		Set<Rectangle> rectangles = new LinkedHashSet<>();
+	public List<Rectangle> readline() throws IOException {
+		List<Rectangle> rectangles = new LinkedList<>();
 
-		Matcher matcher = RECTANGLE_PATTERN.matcher(reader.readLine());
+		String line = reader.readLine();
+
+		if (line == null) {
+			return null;
+		}
+
+		Matcher matcher = RECTANGLE_PATTERN.matcher(line);
 
 		while (matcher.find()) {
 			Rectangle rectangle = new Rectangle(parsePoint(matcher, 1), parsePoint(matcher, 2));
